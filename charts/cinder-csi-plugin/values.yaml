@@ -82,18 +82,20 @@ csi:
     tolerations: []
 
 secret:
-  enabled: false
-  create: false
-#  name: cinder-csi-cloud-config
-#  data:
-#    cloud-config: |-
-#      [Global]
-#      auth-url=http://openstack-control-plane
-#      user-id=user-id
-#      password=password
-#      trust-id=trust-id
-#      region=RegionOne
-#      ca-file=/etc/cacert/ca-bundle.crt
+  enabled: true
+  create: true
+  name: cinder-csi-cloud-config
+  data:
+    cloud-config: |-
+      [Global]
+      auth-url=http://192.168.1.78:5000/
+      username=admin
+      password=txt
+      domain-id=default
+      tenant-name=admin
+      region=RegionOne
+      [BlockStorage]
+      bs-version=v3
 
 storageClass:
   enabled: true
@@ -101,11 +103,25 @@ storageClass:
     isDefault: false
     allowVolumeExpansion: true
   retain:
-    isDefault: false
+    isDefault: true
     allowVolumeExpansion: true
+## create cinder volume ty multiattach
+  # parameters:
+  #   multiattach: true
 # any kind of custom StorageClasses
-#   custom: |-
-#     ---
+custom: |-
+  ---
+  apiVersion: snapshot.storage.k8s.io/v1beta1
+  kind: VolumeSnapshotClass
+  metadata:
+    annotations:
+      snapshot.storage.kubernetes.io/is-default-class: "true"
+    name: csi-cinder-snapclass
+  driver: cinder.csi.openstack.org
+  deletionPolicy: Delete
+  parameters:
+    force-create: "true"
+# ---
 #     apiVersion: storage.k8s.io/v1
 #     kind: StorageClass
 #     metadata:
@@ -116,11 +132,4 @@ storageClass:
 #     parameters:
 #       type: SAS
 #     ---
-#     apiVersion: snapshot.storage.k8s.io/v1beta1
-#     kind: VolumeSnapshotClass
-#     metadata:
-#       name: csi-cinder-snapclass
-#     driver: cinder.csi.openstack.org
-#     deletionPolicy: Delete
-
 priorityClassName: ""

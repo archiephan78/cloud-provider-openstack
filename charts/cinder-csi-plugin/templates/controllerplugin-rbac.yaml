@@ -7,6 +7,46 @@ metadata:
   name: csi-cinder-controller-sa
   namespace: {{ .Release.Namespace }}
 ---
+# Allow kube-rbac-proxies to create tokenreviews to check Prometheus identity when scraping metrics.
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-kube-rbac-proxy-role
+rules:
+  - apiGroups:
+    - "authentication.k8s.io"
+    resources:
+    - "tokenreviews"
+    verbs:
+    - "create"
+---
+# Allow kube-rbac-proxies to create tokenreviews to check Prometheus identity when scraping metrics.
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-kube-rbac-proxy-binding
+subjects:
+  - kind: ServiceAccount
+    name: csi-cinder-controller-sa
+    namespace: openshift-cluster-csi-drivers
+roleRef:
+  kind: ClusterRole
+  name: csi-kube-rbac-proxy-role
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: csi-controller-privileged-binding
+subjects:
+  - kind: ServiceAccount
+    name: csi-cinder-controller-sa
+    namespace: openshift-cluster-csi-drivers
+roleRef:
+  kind: ClusterRole
+  name: csi-privileged-role
+  apiGroup: rbac.authorization.k8s.io
+---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
