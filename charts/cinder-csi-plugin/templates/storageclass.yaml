@@ -2,11 +2,13 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: csi-cinder-sc-delete
+  name: csi-truehdd-sc-delete
   {{- if .Values.storageClass.delete.isDefault }}
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
   {{- end }}
+parameters:
+  type: TRUE_HDD
 provisioner: cinder.csi.openstack.org
 reclaimPolicy: Delete
 allowVolumeExpansion: {{ .Values.storageClass.delete.allowVolumeExpansion }}
@@ -14,11 +16,13 @@ allowVolumeExpansion: {{ .Values.storageClass.delete.allowVolumeExpansion }}
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: csi-cinder-sc-retain
+  name: csi-truehdd-sc-retain
   {{- if .Values.storageClass.retain.isDefault }}
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
   {{- end }}
+parameters:
+  type: TRUE_HDD
 provisioner: cinder.csi.openstack.org
 reclaimPolicy: Retain
 allowVolumeExpansion: {{ .Values.storageClass.retain.allowVolumeExpansion }}

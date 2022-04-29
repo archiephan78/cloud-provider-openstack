@@ -88,12 +88,12 @@ secret:
   data:
     cloud-config: |-
       [Global]
-      auth-url=http://192.168.1.78:5000/
-      username=admin
-      password=txt
+      auth-url=https://venus.xx.xx:5000
+      username=xxx-xxxx
+      password=xxx
       domain-id=default
-      tenant-name=admin
-      region=RegionOne
+      tenant-name=xxx
+      region=HaNoi-1
       [BlockStorage]
       bs-version=v3
 
@@ -116,7 +116,7 @@ custom: |-
   metadata:
     annotations:
       snapshot.storage.kubernetes.io/is-default-class: "true"
-    name: csi-cinder-snapclass
+    name: csi-truehdd-snapclass
   driver: cinder.csi.openstack.org
   deletionPolicy: Delete
   parameters:
